@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import DataFetching from './components/DataFetching.vue'
+import EarthQuakeData from './components/EarthQuakeData.vue'
 </script>
 
 <template>
-  <DataFetching />
+  <EarthQuakeData />
 </template>
 
 <style scoped></style>
