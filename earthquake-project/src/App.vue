@@ -1,9 +1,11 @@
 <script setup lang="ts">
-import EarthQuakeData from './components/EarthQuakeData.vue'
+import EarthquakeData from './components/EarthquakeData.vue'
+import EarthquakeMap from './components/EarthquakeMap.vue'
 </script>
 
 <template>
-  <EarthQuakeData />
+  <EarthquakeData />
+  <EarthquakeMap />
 </template>
 
 <style scoped></style>
