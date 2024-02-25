@@ -30,6 +30,8 @@ onMounted(() => {
     })
     store.dispatch('setMapInstance', map)
 
+    let quakeID: string | number | undefined = undefined
+
     map.on('load', () => {
       map.addSource('earthquakes', {
         type: 'geojson',
@@ -127,12 +129,7 @@ onMounted(() => {
     map.on('mousemove', 'earthquakes-viz', (event) => {
       if (!event.features || !event.features[0].id) return
 
-      const quakeID = event.features[0].id
-
-      map.removeFeatureState({
-        source: 'earthquakes',
-        id: quakeID
-      })
+      if (event.features[0].id) quakeID = event.features[0].id
 
       map.setFeatureState(
         {
@@ -147,10 +144,7 @@ onMounted(() => {
       map.getCanvas().style.cursor = 'pointer'
     })
 
-    map.on('mouseleave', 'earthquakes-viz', (event) => {
-      if (!event.features || !event.features[0].id) return
-
-      const quakeID = event.features[0].id
+    map.on('mouseleave', 'earthquakes-viz', () => {
       map.setFeatureState(
         {
           source: 'earthquakes',
