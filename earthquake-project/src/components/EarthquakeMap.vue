@@ -6,18 +6,18 @@
 import 'mapbox-gl/dist/mapbox-gl.css'
 import { onMounted, ref, computed, watch } from 'vue'
 import mapboxgl from 'mapbox-gl'
-
 import { useStore } from 'vuex'
 
 mapboxgl.accessToken =
   'pk.eyJ1IjoiaXRzanVzdGRlbCIsImEiOiJjbHQwMGFsdGQwbzU5MmtvNjhmZXhiajQ2In0.B2xtzrPhHVHA5yBrm4vjVg'
 const store = useStore()
 const earthquakeData = computed<GeoJSON.FeatureCollection>(() => store.state.earthquakeData)
-const loading = computed(() => store.state.loading)
 
 const mapContainer = ref<HTMLElement | null>(null)
 
 onMounted(() => {
+  const loading = computed(() => store.state.loading)
+
   watch(loading, () => {
     if (!mapContainer.value || loading.value) {
       return
@@ -28,6 +28,7 @@ onMounted(() => {
       center: [-71.224518, 42.213995],
       zoom: 9
     })
+    store.dispatch('setMapInstance', map)
 
     map.on('load', () => {
       map.addSource('earthquakes', {
@@ -35,6 +36,7 @@ onMounted(() => {
         data: earthquakeData.value,
         generateId: true
       })
+
       map.addLayer({
         id: 'earthquakes-viz',
         type: 'circle',
@@ -127,6 +129,7 @@ onMounted(() => {
 
     map.on('mousemove', 'earthquakes-viz', (event) => {
       if (!event.features) return
+      console.log('event feat', event.features)
       map.getCanvas().style.cursor = 'pointer'
 
       // Check whether features exist
@@ -176,9 +179,6 @@ onMounted(() => {
       map.getCanvas().style.cursor = ''
     })
   })
-
-  // Optionally, you can expose the map instance if needed
-  // expose(map, 'map')
 })
 </script>
 

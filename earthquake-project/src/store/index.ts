@@ -1,5 +1,5 @@
 import axios from 'axios'
-import type { Feature, GeoJsonObject } from 'geojson'
+import type { GeoJsonObject } from 'geojson'
 import type mapboxgl from 'mapbox-gl'
 import { createStore } from 'vuex'
 
@@ -7,15 +7,13 @@ interface State {
   earthquakeData: GeoJsonObject[]
   map: mapboxgl.Map | null
   loading: boolean
-  hoveredFeature: Feature | null
 }
 
 export default createStore({
   state: {
     earthquakeData: [],
     map: null,
-    loading: false,
-    hoveredFeature: null
+    loading: false
   } as State,
   getters: {},
   mutations: {
@@ -24,9 +22,6 @@ export default createStore({
     },
     setLoading(state, value) {
       state.loading = value
-    },
-    setHoveredFeature(state, feature) {
-      state.hoveredFeature = feature
     },
     setMap(state, map) {
       state.map = map
