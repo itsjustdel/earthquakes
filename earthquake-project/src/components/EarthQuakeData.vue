@@ -28,7 +28,22 @@ import { useStore } from 'vuex'
 import type { Geometry, Point } from 'geojson'
 
 const store = useStore()
+
+const loading = computed(() => store.state.loading)
+const earthquakeData = computed<GeoJSON.FeatureCollection>(() => store.state.earthquakeData)
+const filteredEarthquakes = computed(() => {
+  const query = searchQuery.value.toLowerCase()
+  return earthquakeData.value.features.filter((quake) =>
+    quake.properties?.place.toLowerCase().includes(query)
+  )
+})
+
 const searchQuery = ref<string>('')
+
+onMounted(() => {
+  store.dispatch('fetchData')
+})
+
 const handleClick = (event: Geometry) => {
   if (event.type !== 'Point') return
   const map = computed(() => store.state.map)
@@ -43,9 +58,6 @@ const handleClick = (event: Geometry) => {
     })
   }
 }
-
-const earthquakeData = computed<GeoJSON.FeatureCollection>(() => store.state.earthquakeData)
-const loading = computed(() => store.state.loading)
 
 const handleMouseOver = (index: number) => {
   const map = computed(() => store.state.map)
@@ -77,15 +89,4 @@ const handleMouseOut = (index: number) => {
   )
   document.body.style.cursor = ''
 }
-
-const filteredEarthquakes = computed(() => {
-  const query = searchQuery.value.toLowerCase()
-  return earthquakeData.value.features.filter((quake) =>
-    quake.properties?.place.toLowerCase().includes(query)
-  )
-})
-
-onMounted(() => {
-  store.dispatch('fetchData')
-})
 </script>
