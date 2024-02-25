@@ -4,7 +4,7 @@
 
 <script setup lang="ts">
 import 'mapbox-gl/dist/mapbox-gl.css'
-import { onMounted, ref, computed } from 'vue'
+import { onMounted, ref, computed, watch } from 'vue'
 import mapboxgl from 'mapbox-gl'
 
 import { useStore } from 'vuex'
@@ -18,29 +18,33 @@ const loading = computed(() => store.state.loading)
 const mapContainer = ref<HTMLElement | null>(null)
 
 onMounted(() => {
-  if (!mapContainer.value) return
-  const map = new mapboxgl.Map({
-    container: mapContainer.value,
-    style: 'mapbox://styles/mapbox/streets-v12',
-    center: [-71.224518, 42.213995],
-    zoom: 9
-  })
-
-  map.on('load', () => {
-    map.addSource('earthquakes', {
-      type: 'geojson',
-      data: earthquakeData.value,
-      generateId: true
+  watch(loading, () => {
+    if (!mapContainer.value || loading.value) {
+      return
+    }
+    const map = new mapboxgl.Map({
+      container: mapContainer.value,
+      style: 'mapbox://styles/mapbox/streets-v12',
+      center: [-71.224518, 42.213995],
+      zoom: 9
     })
-    map.addLayer({
-      id: 'earthquakes-viz',
-      type: 'circle',
-      source: 'earthquakes',
-      paint: {
-        'circle-stroke-color': '#000',
-        'circle-stroke-width': 1,
-        'circle-color': '#000'
-      }
+
+    map.on('load', () => {
+      map.addSource('earthquakes', {
+        type: 'geojson',
+        data: earthquakeData.value,
+        generateId: true
+      })
+      map.addLayer({
+        id: 'earthquakes-viz',
+        type: 'circle',
+        source: 'earthquakes',
+        paint: {
+          'circle-stroke-color': '#000',
+          'circle-stroke-width': 1,
+          'circle-color': '#000'
+        }
+      })
     })
   })
 

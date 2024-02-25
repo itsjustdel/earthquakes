@@ -33,6 +33,7 @@ export default createStore({
       } catch (error) {
         console.error('Error fetching data:', error)
       } finally {
+        console.log('setting is loading false')
         commit('setLoading', false)
       }
     }
