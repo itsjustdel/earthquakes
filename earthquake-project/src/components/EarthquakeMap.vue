@@ -114,38 +114,26 @@ onMounted(() => {
       })
     })
 
-    let quakeID: string | number | undefined = undefined
-
     map.on('click', 'earthquakes-viz', (event) => {
       const clickedPoint = { lng: event.lngLat.lng, lat: event.lngLat.lat }
 
-      // Use easeTo to smoothly transition to the clicked point
-      map.easeTo({
+      map.flyTo({
         center: clickedPoint,
-        duration: 1000, // Animation duration in milliseconds
-        zoom: 7 // Optional: Zoom in slightly for better visibility
+        duration: 1000,
+        zoom: 7
       })
     })
 
     map.on('mousemove', 'earthquakes-viz', (event) => {
-      if (!event.features) return
-      console.log('event feat', event.features)
-      map.getCanvas().style.cursor = 'pointer'
+      if (!event.features || !event.features[0].id) return
 
-      // Check whether features exist
-      if (event.features.length === 0) return
+      const quakeID = event.features[0].id
 
-      if (quakeID) {
-        map.removeFeatureState({
-          source: 'earthquakes',
-          id: quakeID
-        })
-      }
+      map.removeFeatureState({
+        source: 'earthquakes',
+        id: quakeID
+      })
 
-      if (event.features[0].id) quakeID = event.features[0].id
-
-      // When the mouse moves over the earthquakes-viz layer, update the
-      // feature state for the feature under the mouse
       map.setFeatureState(
         {
           source: 'earthquakes',
@@ -155,27 +143,24 @@ onMounted(() => {
           hover: true
         }
       )
+
+      map.getCanvas().style.cursor = 'pointer'
     })
 
-    map.on('mouseleave', 'earthquakes-viz', () => {
-      if (quakeID) {
-        map.setFeatureState(
-          {
-            source: 'earthquakes',
-            id: quakeID
-          },
-          {
-            hover: false
-          }
-        )
-      }
+    map.on('mouseleave', 'earthquakes-viz', (event) => {
+      if (!event.features || !event.features[0].id) return
 
-      quakeID = undefined
-      // Remove the information from the previously hovered feature from the sidebar
-      // magDisplay.textContent = ''
-      // locDisplay.textContent = ''
-      // dateDisplay.textContent = ''
-      // Reset the cursor style
+      const quakeID = event.features[0].id
+      map.setFeatureState(
+        {
+          source: 'earthquakes',
+          id: quakeID
+        },
+        {
+          hover: false
+        }
+      )
+
       map.getCanvas().style.cursor = ''
     })
   })
