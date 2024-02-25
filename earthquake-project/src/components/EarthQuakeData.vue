@@ -4,8 +4,9 @@
     <div v-if="loading">Loading...</div>
     <div v-else>
       <ul>
-        <li v-for="(quake, index) in earthquakeData?.features" :key="index">
-          {{ quake.properties.place }} - Magnitude: {{ quake.properties.mag }}
+        <li v-for="(quake, index) in earthquakeData.features" :key="index">
+          {{ quake.properties ? quake.properties.place : '' }} - Magnitude:
+          {{ quake.properties ? quake.properties.place : '' }}
         </li>
       </ul>
     </div>
@@ -15,11 +16,10 @@
 <script setup lang="ts">
 import { computed, onMounted } from 'vue'
 import { useStore } from 'vuex'
-import type { FeatureCollection } from '@/types/earthquake'
 
 const store = useStore()
 
-const earthquakeData = computed<FeatureCollection>(() => store.state.earthquakeData)
+const earthquakeData = computed<GeoJSON.FeatureCollection>(() => store.state.earthquakeData)
 const loading = computed(() => store.state.loading)
 
 onMounted(() => {

@@ -1,9 +1,9 @@
-import type { FeatureCollection } from '@/types/earthquake'
 import axios from 'axios'
+import type { GeoJsonObject } from 'geojson'
 import { createStore } from 'vuex'
 
 interface State {
-  earthquakeData: FeatureCollection[]
+  earthquakeData: GeoJsonObject[]
   loading: boolean
 }
 
@@ -25,7 +25,7 @@ export default createStore({
     async fetchData({ commit }) {
       commit('setLoading', true)
       try {
-        const response = await axios.get<FeatureCollection[]>(
+        const response = await axios.get<GeoJsonObject[]>(
           'https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/significant_month.geojson'
         )
         commit('setEarthquakeData', response.data)
