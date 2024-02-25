@@ -1,11 +1,12 @@
 <template>
   <div>
     <h1>Data Fetching Example</h1>
+    <input type="text" v-model="searchQuery" placeholder="Search earthquakes..." />
     <div v-if="loading">Loading...</div>
     <div v-else>
       <ul>
         <li
-          v-for="(quake, index) in earthquakeData.features"
+          v-for="(quake, index) in filteredEarthquakes"
           :key="index"
           @mouseover="handleMouseOver(index)"
           @mouseout="handleMouseOut(index)"
@@ -22,11 +23,12 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { useStore } from 'vuex'
 import type { Geometry, Point } from 'geojson'
 
 const store = useStore()
+const searchQuery = ref<string>('')
 const handleClick = (event: Geometry) => {
   if (event.type !== 'Point') return
   const map = computed(() => store.state.map)
@@ -75,6 +77,13 @@ const handleMouseOut = (index: number) => {
   )
   document.body.style.cursor = ''
 }
+
+const filteredEarthquakes = computed(() => {
+  const query = searchQuery.value.toLowerCase()
+  return earthquakeData.value.features.filter((quake) =>
+    quake.properties?.place.toLowerCase().includes(query)
+  )
+})
 
 onMounted(() => {
   store.dispatch('fetchData')
