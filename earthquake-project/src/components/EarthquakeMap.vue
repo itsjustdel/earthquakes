@@ -178,7 +178,7 @@ onMounted(() => {
   })
 
   // Optionally, you can expose the map instance if needed
-  // expose(map, 'map');
+  // expose(map, 'map')
 })
 </script>
 
