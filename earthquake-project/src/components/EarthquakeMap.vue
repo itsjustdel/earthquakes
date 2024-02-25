@@ -12,6 +12,7 @@ mapboxgl.accessToken =
   'pk.eyJ1IjoiaXRzanVzdGRlbCIsImEiOiJjbHQwMGFsdGQwbzU5MmtvNjhmZXhiajQ2In0.B2xtzrPhHVHA5yBrm4vjVg'
 const store = useStore()
 const earthquakeData = computed<GeoJSON.FeatureCollection>(() => store.state.earthquakeData)
+console.log('eq data', earthquakeData)
 
 const mapContainer = ref<HTMLElement | null>(null)
 
@@ -126,7 +127,7 @@ onMounted(() => {
       })
     })
 
-    map.on('mousemove', 'earthquakes-viz', (event) => {
+    map.on('mouseenter', 'earthquakes-viz', (event) => {
       if (!event.features || !event.features[0].id) return
 
       if (event.features[0].id) quakeID = event.features[0].id
