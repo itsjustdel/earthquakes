@@ -8,13 +8,12 @@ import { onMounted, ref, computed, watch } from 'vue'
 import mapboxgl from 'mapbox-gl'
 import { useStore } from 'vuex'
 
-mapboxgl.accessToken =
-  'pk.eyJ1IjoiaXRzanVzdGRlbCIsImEiOiJjbHQwMGFsdGQwbzU5MmtvNjhmZXhiajQ2In0.B2xtzrPhHVHA5yBrm4vjVg'
 const store = useStore()
 const earthquakeData = computed<GeoJSON.FeatureCollection>(() => store.state.earthquakeData)
-console.log('eq data', earthquakeData)
-
 const mapContainer = ref<HTMLElement | null>(null)
+
+mapboxgl.accessToken =
+  'pk.eyJ1IjoiaXRzanVzdGRlbCIsImEiOiJjbHQwMGFsdGQwbzU5MmtvNjhmZXhiajQ2In0.B2xtzrPhHVHA5yBrm4vjVg'
 
 onMounted(() => {
   const loading = computed(() => store.state.loading)
@@ -128,9 +127,9 @@ onMounted(() => {
     })
 
     map.on('mouseenter', 'earthquakes-viz', (event) => {
-      if (!event.features || !event.features[0].id) return
+      if (!event.features || !event.features[0]) return
 
-      if (event.features[0].id) quakeID = event.features[0].id
+      quakeID = event.features[0].id
 
       map.setFeatureState(
         {
