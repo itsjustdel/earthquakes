@@ -1,23 +1,29 @@
 <template>
-  <div>
-    <h1>Data Fetching Example</h1>
-    <input type="text" v-model="searchQuery" placeholder="Search earthquakes..." />
+  <div class="quake-container">
+    <h1>Earthquakes</h1>
+
     <div v-if="loading">Loading...</div>
-    <div v-else>
-      <ul>
-        <li
-          v-for="(quake, index) in filteredEarthquakes"
-          :key="index"
-          @mouseover="handleMouseOver(index)"
-          @mouseout="handleMouseOut(index)"
-          @click="handleClick(quake.geometry)"
-        >
-          <span>
-            {{ quake.properties ? quake.properties.place : '' }} - Magnitude:
-            {{ quake.properties ? quake.properties.mag : '' }}
-          </span>
-        </li>
-      </ul>
+    <div v-else class="quake-list">
+      <input
+        class="search-box"
+        type="text"
+        v-model="searchQuery"
+        placeholder="Search earthquakes..."
+      />
+
+      <div
+        class="list-item"
+        v-for="(quake, index) in filteredEarthquakes"
+        :key="index"
+        @mouseover="handleMouseOver(index)"
+        @mouseout="handleMouseOut(index)"
+        @click="handleClick(quake.geometry)"
+      >
+        <span>
+          {{ quake.properties ? quake.properties.place : '' }} - Magnitude:
+          {{ quake.properties ? quake.properties.mag : '' }}
+        </span>
+      </div>
     </div>
   </div>
 </template>
@@ -52,7 +58,7 @@ const handleMouseOver = (index: number) => {
   map.value.setFeatureState(
     {
       source: 'earthquakes',
-      id: index
+      id: index // to do, doesnt work on filtered list
     },
     {
       hover: true
@@ -68,7 +74,7 @@ const handleMouseOut = (index: number) => {
   map.value.setFeatureState(
     {
       source: 'earthquakes',
-      id: index
+      id: index // to do, doesnt work on filtered list
     },
     {
       hover: false
@@ -100,3 +106,46 @@ onMounted(() => {
   store.dispatch('fetchData')
 })
 </script>
+
+<style scoped>
+.quake-container {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  padding: 40px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  min-width: 410px;
+  z-index: 1000;
+  background-color: #000000cc;
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+  border: 1px solid #ffffff66;
+  border-radius: 4px;
+}
+
+.quake-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+}
+
+.search-box {
+  color: #ebebeba3;
+  background-color: #00000066;
+  padding: 8px;
+  border: 1px solid #ffffff66;
+  border-radius: 4px;
+  outline: none;
+  width: 200px;
+}
+
+.list-item {
+  padding: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.list-item:hover {
+  background-color: #00000066;
+}
+</style>
