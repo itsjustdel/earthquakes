@@ -35,6 +35,33 @@ import type { Geometry, Point } from 'geojson'
 
 const store = useStore()
 const searchQuery = ref<string>('')
+
+const earthquakeData = computed<GeoJSON.FeatureCollection>(() => store.state.earthquakeData)
+const loading = computed(() => store.state.loading)
+const map = computed(() => store.state.map)
+const filteredEarthquakes = computed(() => {
+  const query = searchQuery.value.toLowerCase()
+  if (query === '') return earthquakeData.value.features
+
+  return earthquakeData.value.features.filter((quake) =>
+    quake.properties?.place.toLowerCase().includes(query)
+  )
+})
+
+onMounted(() => {
+  store.dispatch('fetchData')
+})
+
+watch(filteredEarthquakes, () => {
+  if (!map.value) return
+
+  const filteredIds = filteredEarthquakes.value.map((f) => {
+    return earthquakeData.value.features.indexOf(f)
+  })
+
+  map.value.setFilter('earthquakes-viz', ['in', '$id', ...filteredIds])
+})
+
 const handleClick = (event: Geometry) => {
   if (event.type !== 'Point') return
   const map = computed(() => store.state.map)
@@ -50,9 +77,6 @@ const handleClick = (event: Geometry) => {
   }
 }
 
-const earthquakeData = computed<GeoJSON.FeatureCollection>(() => store.state.earthquakeData)
-const loading = computed(() => store.state.loading)
-const map = computed(() => store.state.map)
 const handleMouseOver = (index: number) => {
   if (!map.value) return
 
@@ -93,29 +117,6 @@ const handleMouseOut = (index: number) => {
   )
   document.body.style.cursor = ''
 }
-
-const filteredEarthquakes = computed(() => {
-  const query = searchQuery.value.toLowerCase()
-  if (query === '') return earthquakeData.value.features
-
-  return earthquakeData.value.features.filter((quake) =>
-    quake.properties?.place.toLowerCase().includes(query)
-  )
-})
-
-watch(filteredEarthquakes, () => {
-  if (!map.value) return
-
-  const filteredIds = filteredEarthquakes.value.map((f) => {
-    return earthquakeData.value.features.indexOf(f)
-  })
-
-  map.value.setFilter('earthquakes-viz', ['in', '$id', ...filteredIds])
-})
-
-onMounted(() => {
-  store.dispatch('fetchData')
-})
 </script>
 
 <style scoped>
