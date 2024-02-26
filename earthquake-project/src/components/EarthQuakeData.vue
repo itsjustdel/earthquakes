@@ -55,10 +55,18 @@ const loading = computed(() => store.state.loading)
 const map = computed(() => store.state.map)
 const handleMouseOver = (index: number) => {
   if (!map.value) return
+
+  console.log(earthquakeData.value)
+  console.log(filteredEarthquakes.value[index])
+  const initialIndex = earthquakeData.value.features.findIndex(
+    (f) => filteredEarthquakes.value[index].id === f.id
+  )
+
+  console.log('init index', initialIndex)
   map.value.setFeatureState(
     {
       source: 'earthquakes',
-      id: index // to do, doesnt work on filtered list
+      id: initialIndex
     },
     {
       hover: true
@@ -71,10 +79,13 @@ const handleMouseOver = (index: number) => {
 const handleMouseOut = (index: number) => {
   const map = computed(() => store.state.map)
   if (!map.value) return
+  const initialIndex = earthquakeData.value.features.findIndex(
+    (f) => filteredEarthquakes.value[index].id === f.id
+  )
   map.value.setFeatureState(
     {
       source: 'earthquakes',
-      id: index // to do, doesnt work on filtered list
+      id: initialIndex
     },
     {
       hover: false
