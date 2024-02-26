@@ -35,7 +35,6 @@ export default createStore({
           'https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/significant_month.geojson'
         )
         commit('setEarthquakeData', response.data)
-        console.log('Fetched data:', response.data)
       } catch (error) {
         console.error('Error fetching data:', error)
       } finally {

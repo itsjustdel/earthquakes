@@ -80,13 +80,10 @@ const handleClick = (event: Geometry) => {
 const handleMouseOver = (index: number) => {
   if (!map.value) return
 
-  console.log(earthquakeData.value)
-  console.log(filteredEarthquakes.value[index])
   const initialIndex = earthquakeData.value.features.findIndex(
     (f) => filteredEarthquakes.value[index].id === f.id
   )
 
-  console.log('init index', initialIndex)
   map.value.setFeatureState(
     {
       source: 'earthquakes',
