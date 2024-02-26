@@ -24,9 +24,9 @@ onMounted(() => {
     }
     const map = new mapboxgl.Map({
       container: mapContainer.value,
-      style: 'mapbox://styles/mapbox/streets-v12',
-      center: [-71.224518, 42.213995],
-      zoom: 9
+      style: 'mapbox://styles/mapbox/outdoors-v12',
+      center: [0, 0],
+      zoom: 1
     })
     store.dispatch('setMapInstance', map)
 
